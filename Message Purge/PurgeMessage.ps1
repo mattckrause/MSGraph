@@ -11,18 +11,17 @@ $url = "https://graph.microsoft.com/v1.0/"
 #Import CSV File
 Function Import-Data
 {
-        Param(
-                [Parameter(Mandatory=$true,
-                        ValueFromPipeline=$true,
-                        ValueFromPipeLineByPropertyName=$true,
-                        ValueFromRemainingArguments=$false,
-                        Position=0)]
-                [ValidateNotNullOrEmpty()]
+	Param(
+            [Parameter(Mandatory=$true,
+                    ValueFromPipeline=$true,
+                    ValueFromPipeLineByPropertyName=$true,
+                    ValueFromRemainingArguments=$false,
+                    Position=0)]
+            [ValidateNotNullOrEmpty()]
                 [String]$File
-        )
-        $returnValues = import-csv $File
-
-        return $returnValues
+    )
+    $returnValues = import-csv $File
+    return $returnValues
 }
 
 #Get access token from Graph API
@@ -36,9 +35,9 @@ Function Get-AccessToken
     # Add System.Web for urlencode
     Add-Type -AssemblyName System.Web
 
-    # Create Body for request
+    # Create body
     $Body = @{
-        client_id = $AppId
+    	client_id = $AppId
         client_secret = $AppSecret
         scope = $Scope
         grant_type = 'client_credentials'
@@ -76,31 +75,56 @@ Function MessagePurge
             [String]$Token
         )
 
-    foreach ($record in $Data)
-        {
-                #get the ID of a specific message
-                $user = $record.Recipient
-                $mID = $record.message_id
+	foreach ($record in $Data)
+	{
+        # Submit Request for the Token
+        $user = $record.Recipient
+        $rawmID = $record.message_id
+
+        #call function to encode search string
+        write-host "Encoding URL Search String..." -ForegroundColor Green
+        $mID = urlencode -ImID $rawmID
+
+        write-host "User $user"
+        Write-Host "MID $mID"
+        $queryURL = $url + "users/" + $user + "/messages?`$filter=internetMessageId eq " +  "`'$($mID)`'"
+        Write-Host "The queryURL is $queryURL" -ForegroundColor Red
+        $queryResponse = Invoke-RestMethod -Headers @{Authorization = "Bearer $($Token)"} -Uri $queryURL -Method Get
                 
-                write-host "User $user"
-                Write-Host "MID $mID"
-                $queryURL = $url + "users/" + $user + "/messages?`$filter=internetMessageId eq " +  "`'$($mID)`'"
-                Write-Host "The queryURL is $queryURL" -ForegroundColor Red
-                $queryResponse = Invoke-RestMethod -Headers @{Authorization = "Bearer $($Token)"} -Uri $queryURL -Method Get
+        #Collect Message Info for Logging
+        $mSender = $queryResponse.value.sender.emailaddress.address
+        $mRecipient = $queryResponse.value.torecipients.emailaddress.address
+        $mSubject = $queryResponse.value.subject
                 
-                #Collect Message Info for Logging
-                $mSender = $queryResponse.value.sender.emailaddress.address
-                $mRecipient = $queryResponse.value.torecipients.emailaddress.address
-                $mSubject = $queryResponse.value.subject
-                
-                #Create URL for delete using ID collected above
-                $deleteURL = $url + "users/" + $user + "/messages/" + $queryResponse.value.ID
-                Write-Host "The delete url is $deleteURL" -ForegroundColor Yellow
-                #delete message
-                Invoke-RestMethod -Headers @{Authorization = "Bearer $($Token)"} -Uri $deleteURL -Method Delete
-                #Create message delete logging here
-                Write-Host "The message was deleted. It was From: $mSender, To: $mRecipient, with the Subject: $mSubject." -ForegroundColor Green
-        }
+        #Create URL for delete using ID collected above
+        $deleteURL = $url + "users/" + $user + "/messages/" + $queryResponse.value.ID
+        Write-Host "The delete url is $deleteURL" -ForegroundColor Yellow
+        #delete message
+        Invoke-RestMethod -Headers @{Authorization = "Bearer $($Token)"} -Uri $deleteURL -Method Delete
+        #Create message delete logging here
+        Write-Host "The message was deleted. It was From: $mSender, To: $mRecipient, with the Subject: $mSubject." -ForegroundColor Green
+    }
+}
+
+Function urlencode
+{
+        Param(
+                [Parameter(Mandatory=$true,
+                        ValueFromPipeline=$true,
+                        ValueFromPipeLineByPropertyName=$true,
+                        ValueFromRemainingArguments=$false,
+                        Position=0)]
+                [ValidateNotNullOrEmpty()]
+                [String]$ImID
+        )
+        #split Message ID at '@'
+        $a = $ImID.Split('@')
+        #Trim leading '<' from id value
+        $b = $a[0].trim("<")
+        #build encoded MID value
+        $enCodeString = "<"+[uri]::EscapeDataString($b) + "@" + $a[1]
+        
+        return $enCodeString 
 }
 #----MAIN----
 #Get User/Message Data from CSV File
@@ -112,5 +136,5 @@ $TokenCache = Get-AccessToken
 $Token = $TokenCache.access_token
 
 #Make Requests to the Graph API to delete the messages
-write-host "Deleting Messages From Input File..."
+Write-host "Deleting Message from Input File..."
 MessagePurge -Data $userData -Token $Token
