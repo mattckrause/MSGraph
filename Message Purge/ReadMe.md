@@ -1,16 +1,7 @@
-# Message Purge Sample Script
+﻿# Message Purge Sample Scripts 
 
 ## Description
 
-A sample PowerShell script I created to purge messages from mailboxes using Microsoft Graph API.  
-The sample reads in a list of mailboxes and messages from a .CSV file.
+I have built the same Message Purge script twice. One is using a RESTful request, the second is using the Microsoft Graph PowerShell SDK.
 
-The script is expecting Application Permissions (Client Secret/App ID). So AAD app registrations should be done accordingly.
-
-To archive messages add the archive switch and set to $true. -- purgeMessage.ps1 -Archive:$true
-
-## Updates
-
-6.23.20 - Created function to encode URL in search query. This solves a bug where internet message ids that included '+' would return a null value.
-
-8.12.20 - Added functionality for archiving the purged messages. Controlable using the archive switch.
+If you plan on using one or the other, I would recommend the SDK version. There are many benifits to the SDK!
