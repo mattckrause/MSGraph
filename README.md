@@ -1,2 +1,2 @@
 # MSGraph
-My MS Graph Scripts/Apps
+My Microsoft Graph Scripts/Apps
