@@ -1,6 +1,6 @@
 ﻿<#
-Report all members of a group. Processing users of nested groups as well.
-Requires Microsoft Graph API PowerShell SDK
+Report all members of a group. Processing users in nested groups as well.
+Requires Microsoft Graph API PowerShell SDK (https://docs.microsoft.com/en-us/graph/powershell/installation)
 #>
 
 #Connect to Graph API using App Registration
