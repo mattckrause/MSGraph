@@ -21,7 +21,7 @@ $group = Get-MgGroup -Filter "DisplayName eq '$groupName'"
 #Get all transitive members
 $groupMembers = Get-MgGroupTransitiveMember -GroupId $group.Id
 
-#Add only User objects to the List for export
+#Add only User objects to the list for export
 $groupMembers | foreach-object{ `
     if($_.AdditionalProperties.'@odata.type' -like "*user") `
         {write-host $_.AdditionalProperties.displayName `
