@@ -78,7 +78,7 @@ Function purgeMessage
         }
 
         #Remove message from mailbox
-        remove-mgusermessage -MessageId $message.Id -UserId $user
+        remove-mgusermessage -MessageId $message.Id -UserId $record.Recipient
         #Report results
         write-Host "The message was found and removed. The sender is: $($message.from.emailaddress.Name). The subject is: $($message.Subject), and the ID is: $($message.Id)." -ForegroundColor Green
     }
