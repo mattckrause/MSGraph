@@ -1,7 +1,7 @@
 ﻿# Group Member Report processing Nested Groups
 
 ## Description
-I have been asked several times for a method to report on group members that also processes nested groups.
+I have built a script to report on group members that also reports users in nested groups using the Microsoft Graph API PowerShell SDK.
 
 Microsoft Graph API provides a fairly simple process to do this so I build a script utilizing the Microsoft Graph PowerShell SDK to accomplish this
 
