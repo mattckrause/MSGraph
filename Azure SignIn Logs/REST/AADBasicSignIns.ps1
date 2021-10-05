@@ -10,7 +10,7 @@ $length = -7 #<--Last 7 days
 $date = (get-date).AddDays($length)
 $sDate = $date.ToString("yyyy-MM-dd")
 [System.Collections.ArrayList]$reportData = @()
-$fileLocation = "C:\temp\temp.csv"
+$fileLocation = "C:\temp\temp.csv" #<-- Report file location
 
 #----FUNCTIONS----
 #Get access token from Graph API
@@ -47,14 +47,15 @@ Function Get-AccessToken
 $TokenCache = Get-AccessToken
 $Token = $TokenCache.access_token
 
-#Make Requests to the Graph API to get Azure Sign-In logs
+#Make Requests to the Graph API to get Azure Sign-In logs including ONLY basic auth attempts
 $uri = "https://graph.microsoft.com/v1.0/auditLogs/SignIns?`$filter=CreatedDateTime ge $sDate and clientAppUsed ne 'Browser' and clientAppUsed ne 'Mobile Apps and Desktop clients'"
 $method = "GET"
 
 do
 {
     $siLogs = Invoke-RestMethod -Method $method -Headers @{Authorization = "Bearer $($Token)"; "Content-Type" = "application/json" } -Uri $uri
-    $reportData +=$siLogs.value
-    $uri = $siLogs.'@odata.nextlink'    
+    $reportData += $siLogs.value
+    $uri = $siLogs.'@odata.nextlink'
 }until([String]::IsNullOrEmpty($uri))
+
 $reportData | export-csv $fileLocation -NoTypeInformation
