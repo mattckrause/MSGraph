@@ -87,8 +87,10 @@ Function purgeMessage
 #Main Script
 #Get User/Message Data from CSV File
 $userData = Import-Data -File $dataFile
+
 #Connect to Graph API
 psmConnectToGraph
+
 #Purge messages from mailboxes
 purgeMessage -Data $userData -arch $archive
 
