@@ -51,6 +51,7 @@ $Token = $TokenCache.access_token
 $uri = "https://graph.microsoft.com/v1.0/auditLogs/SignIns?`$filter=CreatedDateTime ge $sDate and clientAppUsed ne 'Browser' and clientAppUsed ne 'Mobile Apps and Desktop clients'"
 $method = "GET"
 
+#Ensure we loop through all available pages using '@odata.nextlink'
 do
 {
     $siLogs = Invoke-RestMethod -Method $method -Headers @{Authorization = "Bearer $($Token)"; "Content-Type" = "application/json" } -Uri $uri
