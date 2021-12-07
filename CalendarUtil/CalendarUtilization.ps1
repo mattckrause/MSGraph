@@ -58,7 +58,7 @@ foreach ($calendar in $calendars)
     }
     #Calc Utilization based on 8 hour work days
     $calendarUtilization = (($calendarEventDuration.TotalHours) / $([int]$days * 8)).ToString("P")
-    
+
     #record data and add to report
     $roomEvent = [PSCustomObject]@{
         'Calendar'          = $calendar;
