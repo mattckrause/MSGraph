@@ -69,8 +69,8 @@ Function MessagePurge
         [String]$Token
         )
 
-	foreach ($record in $Data)
-	{
+    foreach ($record in $Data)
+    {
         #set user and message ID
         $user = $record.Recipient
         $rawmID = $record.message_id
@@ -80,7 +80,7 @@ Function MessagePurge
 
         $queryURL = $url + "users/" + $user + "/messages?`$filter=internetMessageId eq " +  "`'$($mID)`'"
         $queryResponse = Invoke-RestMethod -Headers @{Authorization = "Bearer $($Token)"} -Uri $queryURL -Method Get
-        
+
         #is archiving the message necessary?
         if ($arch -eq $true)
         {
@@ -119,7 +119,7 @@ Function urlencode
     $b = $a[0].trim("<")
     #build encoded MID value
     $enCodeString = "<"+[uri]::EscapeDataString($b) + "@" + $a[1]
-    return $enCodeString 
+    return $enCodeString
 }
 
 #----MAIN----

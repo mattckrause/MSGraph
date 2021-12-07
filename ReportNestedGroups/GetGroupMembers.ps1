@@ -24,8 +24,7 @@ $groupMembers = Get-MgGroupTransitiveMember -GroupId $group.Id
 # Add only User objects to the list for export
 $groupMembers | foreach-object{ `
     if($_.AdditionalProperties.'@odata.type' -like "*user") `
-        {write-host $_.AdditionalProperties.displayName `
-        $output.Add($_.AdditionalProperties.displayName) | Out-Null }}
+        {$output.Add($_.AdditionalProperties.displayName) | Out-Null }}
 
 # Write data to .csv file
 $output | Out-File $report
