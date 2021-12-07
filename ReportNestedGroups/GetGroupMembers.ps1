@@ -30,5 +30,6 @@ $groupMembers | foreach-object{ `
 # Write data to .csv file
 $output | Out-File $report
 
+
 # Disconnect from Graph
 Disconnect-MgGraph
