@@ -18,8 +18,6 @@ Function Import-Data
 {
     Param(
         [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipeLineByPropertyName = $true,
             ValueFromRemainingArguments = $false,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
@@ -44,15 +42,11 @@ Function purgeMessage
 {
     Param(
         [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
             ValueFromRemainingArguments = $false,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
         [array]$Data,
         [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
             ValueFromRemainingArguments = $false,
             Position = 1)]
         [ValidateNotNullOrEmpty()]

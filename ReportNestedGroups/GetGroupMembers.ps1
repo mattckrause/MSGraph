@@ -24,14 +24,11 @@ $groupMembers = Get-MgGroupTransitiveMember -GroupId $group.Id
 # Add only User objects to the list for export
 $groupMembers | foreach-object{ `
     if($_.AdditionalProperties.'@odata.type' -like "*user") `
-        {write-host $_.AdditionalProperties.displayName `
-        $output.Add($_.AdditionalProperties.displayName) | Out-Null }}
+        {$output.Add($_.AdditionalProperties.displayName) | Out-Null }}
 
 # Write data to .csv file
 $output | Out-File $report
 
-# Print summary to console
-Write-Host $output.count "Users exported to $report"
 
 # Disconnect from Graph
-Disconnect-MgGraph # <- Remember to disconnect from MS Graph API when the app is done!
+Disconnect-MgGraph

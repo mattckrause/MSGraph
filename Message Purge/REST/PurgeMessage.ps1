@@ -18,13 +18,9 @@ $archiveMailbox = "archivemailbox"
 Function Import-Data
 {
 	Param(
-            [Parameter(Mandatory=$true,
-                    ValueFromPipeline=$true,
-                    ValueFromPipeLineByPropertyName=$true,
-                    ValueFromRemainingArguments=$false,
-                    Position=0)]
-            [ValidateNotNullOrEmpty()]
-                [String]$File
+        [Parameter(Mandatory=$true, Position=0)]
+        [ValidateNotNullOrEmpty()]
+        [String]$File
     )
     $returnValues = import-csv $File
     return $returnValues
@@ -40,7 +36,7 @@ Function Get-AccessToken
 
     # Create body
     $Body = @{
-    	client_id = $AppId
+        client_id = $AppId
         client_secret = $AppSecret
         scope = $Scope
         grant_type = 'client_credentials'
@@ -62,31 +58,19 @@ Function Get-AccessToken
 Function MessagePurge
 {
     Param(
-            [Parameter(Mandatory=$true,
-                    ValueFromPipeline=$true,
-                    ValueFromPipelineByPropertyName=$true,
-                    ValueFromRemainingArguments=$false,
-                    Position=0)]
-            [ValidateNotNullOrEmpty()]
-            [array]$Data,
-            [Parameter(Mandatory=$true,
-                    ValueFromPipeline=$true,
-                    ValueFromPipelineByPropertyName=$true,
-                    ValueFromRemainingArguments=$false,
-                    Position=1)]
-            [ValidateNotNullOrEmpty()]
-            [bool]$arch,
-            [Parameter(Mandatory=$true,
-                    ValueFromPipeline=$true,
-                    ValueFromPipelineByPropertyName=$true,
-                    ValueFromRemainingArguments=$false,
-                    Position=2)]
-            [ValidateNotNullOrEmpty()]
-            [String]$Token
+        [Parameter(Mandatory=$true, Position=0)]
+        [ValidateNotNullOrEmpty()]
+        [array]$Data,
+        [Parameter(Mandatory=$true, Position=1)]
+        [ValidateNotNullOrEmpty()]
+        [bool]$arch,
+        [Parameter(Mandatory=$true, Position=2)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Token
         )
 
-	foreach ($record in $Data)
-	{
+    foreach ($record in $Data)
+    {
         #set user and message ID
         $user = $record.Recipient
         $rawmID = $record.message_id
@@ -96,7 +80,7 @@ Function MessagePurge
 
         $queryURL = $url + "users/" + $user + "/messages?`$filter=internetMessageId eq " +  "`'$($mID)`'"
         $queryResponse = Invoke-RestMethod -Headers @{Authorization = "Bearer $($Token)"} -Uri $queryURL -Method Get
-        
+
         #is archiving the message necessary?
         if ($arch -eq $true)
         {
@@ -124,22 +108,18 @@ Function MessagePurge
 
 Function urlencode
 {
-        Param(
-                [Parameter(Mandatory=$true,
-                        ValueFromPipeline=$true,
-                        ValueFromPipeLineByPropertyName=$true,
-                        ValueFromRemainingArguments=$false,
-                        Position=0)]
-                [ValidateNotNullOrEmpty()]
-                [String]$ImID
-        )
-        #split Message ID at '@'
-        $a = $ImID.Split('@')
-        #Trim leading '<' from id value
-        $b = $a[0].trim("<")
-        #build encoded MID value
-        $enCodeString = "<"+[uri]::EscapeDataString($b) + "@" + $a[1]
-        return $enCodeString 
+    Param(
+            [Parameter(Mandatory=$true, Position=0)]
+            [ValidateNotNullOrEmpty()]
+            [String]$ImID
+    )
+    #split Message ID at '@'
+    $a = $ImID.Split('@')
+    #Trim leading '<' from id value
+    $b = $a[0].trim("<")
+    #build encoded MID value
+    $enCodeString = "<"+[uri]::EscapeDataString($b) + "@" + $a[1]
+    return $enCodeString
 }
 
 #----MAIN----

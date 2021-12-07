@@ -1,4 +1,4 @@
-﻿# Message Purge Sample Scripts 
+﻿# Message Purge Sample Scripts
 
 ## Description
 
