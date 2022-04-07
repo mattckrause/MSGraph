@@ -6,7 +6,7 @@ Getting token via Client Credentials Flow
 #Access Token Function
 Function Get-AccessToken
 {
-    $AppId = '' # <- Application ID (AAD) 
+    $AppId = '' # <- Application ID (AAD)
     $AppSecret = '' # <- App Registration Secret
     $TenantID = '' # <- Tenant ID
     $Scope = "https://graph.microsoft.com/.default" # <- Scope of the application
@@ -37,16 +37,10 @@ Function SetEvent
 {
     Param(
         [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ValueFromRemainingArguments = $false,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
         [String]$User,
         [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ValueFromRemainingArguments = $false,
             Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]$Token
@@ -67,11 +61,11 @@ Function SetEvent
                         "content"     = "New Years"
                     };
                     "start"    = @{
-                        "dateTime" = "2021-01-01T00:00:00";
+                        "dateTime" = "2022-01-01T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "end"      = @{
-                        "dateTime" = "2021-01-02T00:00:00";
+                        "dateTime" = "2022-01-02T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "isAllDay" = $true
@@ -91,11 +85,11 @@ Function SetEvent
                         "content"     = "Thanksgiving"
                     };
                     "start"    = @{
-                        "dateTime" = "2021-11-27T00:00:00";
+                        "dateTime" = "2022-11-27T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "end"      = @{
-                        "dateTime" = "2021-11-28T00:00:00";
+                        "dateTime" = "2022-11-28T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "isAllDay" = $true
@@ -115,11 +109,11 @@ Function SetEvent
                         "content"     = "Martin Luther King Jr. Day"
                     };
                     "start"    = @{
-                        "dateTime" = "2021-01-18T00:00:00";
+                        "dateTime" = "2022-01-18T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "end"      = @{
-                        "dateTime" = "2021-01-19T00:00:00";
+                        "dateTime" = "2022-01-19T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "isAllDay" = $true
@@ -139,11 +133,11 @@ Function SetEvent
                         "content"     = "Memorial Day"
                     };
                     "start"    = @{
-                        "dateTime" = "2021-05-31T00:00:00";
+                        "dateTime" = "2022-05-31T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "end"      = @{
-                        "dateTime" = "2021-06-1T00:00:00";
+                        "dateTime" = "2022-06-1T00:00:00";
                         "timeZone" = "America/Denver"
                     };
                     "isAllDay" = $true
@@ -154,9 +148,9 @@ Function SetEvent
             }
         )
     }
-    
+
     $body = $bodyCreation | ConvertTo-Json -Depth 4
-    
+
     $CreateResults = Invoke-RestMethod -Body $body -Uri $queryURI -Method "POST" -Headers @{Authorization = "Bearer $($Token)"; "Content-Type" = "application/json" }
     Return $CreateResults
 }
@@ -169,4 +163,3 @@ $Token = $TokenCache.access_token
 
 #Create Appointments
 $runResult = SetEvent -User $user -Token $token
-Write-Host $runResult.responses.status
