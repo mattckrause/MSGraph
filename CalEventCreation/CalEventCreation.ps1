@@ -162,4 +162,4 @@ $TokenCache = Get-AccessToken
 $Token = $TokenCache.access_token
 
 #Create Appointments
-$runResult = SetEvent -User $user -Token $token
+SetEvent -User $user -Token $token
