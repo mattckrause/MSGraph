@@ -8,8 +8,9 @@ Function Get-AccessToken
 {
     $AppId = '' # <- Application ID (AAD) 
     $AppSecret = '' # <- App Registration Secret
+    $TenantID = '' # <- Tenant ID
     $Scope = "https://graph.microsoft.com/.default" # <- Scope of the application
-    $Url = "https://login.microsoftonline.com/d4023def-41d0-46cd-922f-985e54a71bd4/oauth2/v2.0/token" # <- V2 Token Endpoint
+    $Url = "https://login.microsoftonline.com/$tenantID/oauth2/v2.0/token" # <- V2 Token Endpoint
 
     # Create body
     $Body = @{
