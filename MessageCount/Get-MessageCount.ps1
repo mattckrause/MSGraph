@@ -1,6 +1,5 @@
 ﻿<#
-PS Script to use Graph API get email message count for all users in a group/dl
-requires date in format "2023-01-30"
+PowerShell Script to use Graph API get email message count for all users in a group/dl
 Matt Krause - Microsoft Graph CPX
 #>
 
@@ -15,7 +14,7 @@ Param(
 )
 
 #Variable Declaration
-$reportFile = "C:\github\MyScripts\GraphAPI\PS_SDK\Mail\MessageCount\messages.csv" # <- CSV Report
+$reportFile = "C:\ReportFileLocation\MessageCount.csv" # <- CSV Report
 [System.Collections.ArrayList]$MBmessageCount = @()
 $totalMessageCount = 0
 
@@ -23,9 +22,9 @@ $totalMessageCount = 0
 #Connect to Graph using appID and certificate
 Function psmConnectToGraph
 {
-    $authCertThumb = "DB807E7E156FB01919A517971208A3EEE3CB0087"
-    $tenantID = "7b2828b9-89a3-4507-9e1a-05ff46d1192d"
-    $appID = "4b6a9db7-646c-4c4e-b083-1cce4169f424"
+    $authCertThumb = "" #<- update with your certificate thumbprint
+    $tenantID = "" #<- update with your tenant ID
+    $appID = "" #<- update with your Application ID
 
     Connect-MGGraph -ClientId $appID -TenantId $tenantID -CertificateThumbprint $authCertThumb
 }
