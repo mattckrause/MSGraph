@@ -25,7 +25,7 @@ Get-MessageCount.ps1 -groupName "aadGroupName" -startDate "2023-01-01" -endDate 
 ## Output
 
 The script will output the total count of messages in the console. It also creates a .CSV file with a message breakdown per mailbox
-[CSV Example](C:\github\MSGraph\MessageCount\messages.csv)
+[CSV Example File](https://github.com/mattckrause/MSGraph/blob/Main/MessageCount/messages.csv)
 
 ## Disclaimer
 
