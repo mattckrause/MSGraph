@@ -1,10 +1,28 @@
 ﻿<#
-Very simple script to use MS PowerShell Graph API SDK to create external connections and write objects to them. 
-It uses dummy data created from copilot to populate the external items.
+New-GraphConnector.ps1
+Description:
+    This script creates a Microsoft Graph external connection and writes items to it.
+    It requires the Microsoft.Graph module to be installed and imported.
+    The script provides functions to create and remove external connections, as well as write items to the connection.
+    The script uses a .env file for authentication details.
+    The .env file should contain the following lines:
+        APP_ID=<your_app_id>
+        TENANT_ID=<your_tenant_id>
+        AUTH_CERT_THUMB=<your_auth_cert_thumbprint>
+Matt Krause
 #>
 
-#connect to graph
-Function psmConnectToGraph
+param(
+    [Parameter(Mandatory = $true,
+        ValueFromPipeline = $true,
+        ValueFromPipeLineByPropertyName = $true,
+        ValueFromRemainingArguments = $false,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()]
+    [String]$Process
+)
+
+Function Connect-ToGraph
 {
     $data = get-content -Path .env
     $appID = ($data[0].split("="))[1]
@@ -14,7 +32,7 @@ Function psmConnectToGraph
     Connect-MGGraph -ClientId $appID -TenantId $tenantID -CertificateThumbprint $authCertThumb -nowelcome
 }
 
-Function Create-ExternalConnection
+Function New-ExternalConnection
 {
     Param(
         [Parameter(Mandatory = $true,
@@ -28,7 +46,7 @@ Function Create-ExternalConnection
     $connectionParams = @{
         id = $ConnectionName
         name = $ConnectionName
-        description = "Test connector called $ConnectionName. Containing a list of company names."
+        description = "Test connector called $ConnectionName created using PowerShell. Contains a list of company names and discriptions for each."
     }
     $schemaParams = @{
         baseType = "microsoft.graph.externalItem"
@@ -60,7 +78,7 @@ Function Create-ExternalConnection
     }
 }
 
-Function delete-ExternalConnection
+Function Remove-ExternalConnection
 {
     Param(
         [Parameter(Mandatory = $true,
@@ -121,48 +139,34 @@ Function Write-Object
 }
 
 Set-MgExternalConnectionItem -ExternalConnectionId $externalConnectionId -ExternalItemId $externalItemId -BodyParameter $params
-#Invoke-MgGraphRequest -Method put -Uri "https://graph.microsoft.com/v1.0/external/connections/$externalConnectionId/items/$externalItemId" -Body @params
 }
 
 
 
 #Main Script
-#Connect to Graph API
-psmConnectToGraph
+Connect-ToGraph
 
-#Create External Connection and schema manually adjusting for smaller batches
-for ($i = 1; $i -lt 26; $i++) {
-    #create external item and schema
-    Create-ExternalConnection -ConnectionName "Connection$i"
-    #delete-ExternalConnection -ConnectionName "Connection$i"
-    #sleep
-    start-sleep -s 20
-    }
-#>
+$ConnectionName = "PowerShellGraphConnector"
 
-#write objects to external connections after creation manually adjusting for batches of 25
-#<#
-$objects = Import-Csv -Path "C:\github\MyScripts\GraphAPI\PS_SDK\ExternalItems\companies.csv" 
-$content = Import-Csv -Path "C:\github\MyScripts\GraphAPI\PS_SDK\ExternalItems\content.csv"
-$l = 0
-#start with 132 for data ingestion
-for($j = 1; $j -lt 26; $j++)
-    {
-        write-host "Writing objects to Connection$j"
-        for ($k = 0; $k -lt 5; $k += 5)
-            { $data = $objects[$l..($l+4)]
-                $id = 1
-                $data | ForEach-Object {
-                    $index = get-random -Minimum 0 -Maximum 49
-                    Write-Object -externalConnectionId "Connection$j" -item $_.name -externalItemId $id -content $content[$index].description
-                    $id++
-                }
-                $l += 5
-            }
-            start-sleep -Seconds 10
-    }
-write-host "start next write object run at $l" #manually update $l with this value
-#>
+if ($Process.ToLower() -eq "install")
+{
+    New-ExternalConnection -ConnectionName $ConnectionName
+
+}
+elseif ($Process.ToLower() -eq "uninstall")
+{
+    Remove-ExternalConnection -ConnectionName $ConnectionName
+}
+elseif ($Process.ToLower() -eq "writeitems")
+{
+    Import-Csv -Path "C:\github\MyScripts\GraphAPI\PS_SDK\ExternalItems\fictitious_companies.csv" | ForEach-Object {
+        Write-Object -externalConnectionId $ConnectionName -item $_.name -externalItemId $_.name -content $_.description
+    } 
+}
+else
+{
+    Write-Host "Invalid process specified. Use 'install','uninstall', or 'writeitems."
+}
 
 #Disconnect from Graph when complete!
 Disconnect-MGGraph
