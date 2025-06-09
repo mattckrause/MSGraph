@@ -69,7 +69,7 @@ Function New-ExternalConnection
     catch{
         write-host "Error creating connection $ConnectionName"
     }
-    start-sleep -s 20
+    start-sleep -s 5
     try{
         Update-MgExternalConnectionSchema -ExternalConnectionId $ConnectionName -BodyParameter $schemaParams
     }
