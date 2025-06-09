@@ -151,7 +151,6 @@ $ConnectionName = "PowerShellGraphConnector"
 if ($Process.ToLower() -eq "install")
 {
     New-ExternalConnection -ConnectionName $ConnectionName
-
 }
 elseif ($Process.ToLower() -eq "uninstall")
 {
